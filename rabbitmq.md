@@ -34,6 +34,8 @@ export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:/opt/homebrew/sbin
 ```
 
+### Pub and Sub (produce and consume)
+
 ```
 pip install pika
 ```
@@ -75,9 +77,31 @@ Stop the consumer then publish and peek (peek means see but not consume)
 python rabbitmq-publisher.py
 ```
 
+### Peek
+
 ```
 python rabbitmq-peek-stats.py
 ```
+
+### Priority
+
+```
+python rabbitmq-priority-queue.py
+```
+
+```
+curl -sS -u guest:guest http://localhost:15672/api/queues | jq '.[].name'
+```
+
+```
+"priority_queue"
+```
+
+```
+curl -sS -u guest:guest http://localhost:15672/api/queues/%2F/priority_queue
+```
+
+
 
 
 ## Shutdown, clean up

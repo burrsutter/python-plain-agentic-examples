@@ -1,5 +1,4 @@
-from ast import Assign
-from platform import system
+
 from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel, Field

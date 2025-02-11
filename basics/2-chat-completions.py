@@ -44,3 +44,19 @@ response = completion_2.choices[0].message.content
 
 print(response)
 
+# completion_3 = client.chat.completions.create(
+#     model=os.getenv("MODEL_NAME"),    
+#     messages=[
+#         {"role": "system", "content": "You're a helpful assistant."},
+#         {
+#             "role": "user",
+#             "content": "Who is Burr Sutter",
+#         },
+#     ],
+# )
+
+# response = completion_3.choices[0].message.content
+
+# print(response)
+
+

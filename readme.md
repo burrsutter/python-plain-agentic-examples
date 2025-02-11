@@ -222,8 +222,10 @@ export MODEL_NAME=granite3-guardian:8b-fp16
 export INFERENCE_SERVER_URL=http://localhost:11434/v1
 ```
 
+Try some prompts 
+
 ```
-python guardian-playground.py
+python guardian-playground-risk.py
 ```
 
 ## Logging
@@ -251,6 +253,7 @@ logger = logging.getLogger(__name__)
 ## Questions, ToDos
 
 If tool not invoked, how to retry, how many retries?
+if tool is invoked with incorrect parameters, how to detect
 If augmentations ignored
 Better hallunication detection
 Externalized prompts, prompts as code
@@ -261,3 +264,10 @@ Folder watcher for mock emails
 Kafka listener/consumer for Debezium style support tickets
 Router to appropriate in-box (Kafka Topic) 
 
+routing example:
+    technical support - technical support
+    receipt/invoice - accounting/finance
+    job/interview inquiry - human resources
+
+screen via guardian
+router, 3 processors

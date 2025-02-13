@@ -5,6 +5,15 @@ from duckduckgo_search import DDGS
 import os
 import json
 import requests
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
 
 load_dotenv()
 
@@ -29,8 +38,10 @@ def search_duckduckgo(query: str, num_results: int = 3):
     """Search DuckDuckGo and return top results."""
     with DDGS() as ddgs:
         results = list(ddgs.text(query, max_results=num_results))
-    
+
+    logger.info(json.dumps(results))
     return results  # Returns a list of dictionaries with search results
+
 
 # Define OpenAI tool (function calling)
 tools = [
@@ -59,30 +70,33 @@ completion_1 = client.chat.completions.create(
     tool_choice="auto",
 )
 
+
 # function invoker
 def call_function(name, args):
     if name == "search_duckduckgo":
-        print("calling search_duckduckgo")
+        logger.info("calling search_duckduckgo")
         return search_duckduckgo(**args)
     
-# for debugging
-def print_messages(messages):
-    print("!!!!!")
-    print(type(messages))
-    print(messages)
-    print("!!!!!")
-    
+def review_results(result):
+    logger.info("REVIEW")
+    logger.info(result)
+    logger.info("REVIEW")
+
+
 # generic tool callback invocation mechanism
 if completion_1.choices[0].message.tool_calls:
+    logger.info("TOOLS: %s", completion_1.choices[0].message.tool_calls)
     for tool_call in completion_1.choices[0].message.tool_calls:
         name = tool_call.function.name
         args = json.loads(tool_call.function.arguments)
         messages.append(completion_1.choices[0].message)
         result = call_function(name, args)
+        # after the tool call, add to the messages array
+        review_results(result)
         messages.append(
             {"role": "tool", "tool_call_id": tool_call.id, "content": json.dumps(result)}
         )
-        print_messages(messages)
+        logger.debug(messages)
 
 
 # now call the model again, with the results of the tool invocation
@@ -97,9 +111,9 @@ completion_2 = client.beta.chat.completions.parse(
 )
 
 
-response = completion_2.choices[0].message.content
-print("------------")
-print("Final Answer: ", response)
-print("------------")
+response = completion_2.choices[0].message.parsed
+
+logger.info("Final Answer: %d", response.topspeed)
+
 
 

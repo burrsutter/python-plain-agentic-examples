@@ -117,6 +117,13 @@ https://ollama.com/library/qwen2.5-coder:14b-instruct-fp16
 ollama pull qwen2.5-coder:14b-instruct-fp16
 ```
 
+or
+
+```
+ollama pull granite3.1-dense:8b-instruct-fp16
+```
+
+
 Check your downloaded models by listing them 
 
 ```
@@ -128,7 +135,7 @@ No API_KEY needed for Ollama, just override the env var
 ```
 export API_KEY=nothing
 export INFERENCE_SERVER_URL=http://localhost:11434/v1
-export MODEL_NAME=llama3.2:3b-instruct-fp16
+export MODEL_NAME=qwen2.5-coder:14b-instruct-fp16
 ```
 
 ## Test connectivity, list models
@@ -213,6 +220,8 @@ python 5-basic-rag-like-special-events.py
 
 https://huggingface.co/ibm-granite/granite-guardian-3.0-8b
 
+https://github.com/ibm-granite/granite-guardian/blob/main/cookbooks/granite-guardian-3.0/detailed_guide_ollama.ipynb
+
 ```
 ollama pull granite3-guardian:8b-fp16
 ```
@@ -227,6 +236,10 @@ Try some prompts
 ```
 python guardian-playground-risk.py
 ```
+
+## Workflows
+
+
 
 ## Logging
 
@@ -271,3 +284,15 @@ routing example:
 
 screen via guardian
 router, 3 processors
+
+PII screening
+https://github.com/Observicia/Observicia/blob/main/deploy/k8s/opa_policy_endpoint/pii/pii.py
+
+Llama Stack examples
+https://github.com/meta-llama/llama-stack-apps/blob/main/README.md
+
+Anthropic Examples
+https://github.com/anthropics/anthropic-cookbook/tree/main/patterns/agents
+
+
+Use Deepseek for planning, then faster tool callers like qwen for execution of the sub-tasks

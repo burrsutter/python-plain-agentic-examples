@@ -90,6 +90,11 @@ password is `admin` by default
 CREATE ROLE postgres WITH LOGIN SUPERUSER PASSWORD 'admin';
 ```
 
+## Sample Databases
+
+https://wiki.postgresql.org/wiki/Sample_Databases
+
+
 ### Netflix
 
 ```
@@ -234,7 +239,7 @@ select customer_id, company_name from customers limit 5;
 
 ### Pagila
 
-Sakila for Postgres
+Sakila for Postgres - DVD Rentals
 
 https://wiki.postgresql.org/wiki/Sample_Databases
 
@@ -324,7 +329,18 @@ SET search_path TO schema_name, public;
 (5 rows)
 ```
 
+### IMDB
+
+https://github.com/hakanersu/imdb-importer
+
+or
+
+https://dev.to/1mehal/script-to-import-imdb-database-into-postgresql-2lj3
+
+
 ### Chinook
+
+Chinook uses table and column names like "Artist", this means you have also include double quotes with your SQL statements
 
 ```
 curl -O https://raw.githubusercontent.com/neondatabase-labs/postgres-sample-dbs/refs/heads/main/chinook.sql
@@ -343,7 +359,7 @@ CREATE DATABASE chinook;
 ```
 
 ```
-\i chinook.sql
+\i /Users/burr/my-projects/python-plain-agentic-examples/sample-dbs/chinook.sql
 ```
 
 ```
@@ -386,6 +402,97 @@ select "AlbumId", "Title" from "Album" limit 5;
        5 | Big Ones
 ```
 
+
+
+### AdventureWorks
+
+https://github.com/morenoh149/postgresDBSamples/tree/master/adventureworks
+
+Adventureworks organizes tables into schemas
+
+```
+cd sample-dbs
+```
+
+```
+psql -c "CREATE DATABASE \"Adventureworks\";"
+```
+
+```
+psql -l
+```
+
+```
+                             List of databases
+      Name      |  Owner   | Encoding | Collate | Ctype | Access privileges
+----------------+----------+----------+---------+-------+-------------------
+ Adventureworks | burr     | UTF8     | C       | C     |
+ burr           | burr     | UTF8     | C       | C     |
+ netflix        | postgres | UTF8     | C       | C     |
+ northwind      | burr     | UTF8     | C       | C     |
+ pagila         | burr     | UTF8     | C       | C     |
+ postgres       | burr     | UTF8     | C       | C     |
+ template0      | burr     | UTF8     | C       | C     | =c/burr          +
+                |          |          |         |       | burr=CTc/burr
+ template1      | burr     | UTF8     | C       | C     | =c/burr          +
+                |          |          |         |       | burr=CTc/burr
+(8 rows)
+```
+
+```
+psql -d Adventureworks < adventureworks.sql
+```
+
+```
+ psql -U burr -W
+```
+
+```
+\c Adventureworks
+```
+
+Schemas not "relations"
+
+```
+\dn
+```
+
+```
+    List of schemas
+      Name      | Owner
+----------------+-------
+ hr             | burr
+ humanresources | burr
+ pe             | burr
+ person         | burr
+ pr             | burr
+ production     | burr
+ pu             | burr
+ public         | burr
+ purchasing     | burr
+ sa             | burr
+ sales          | burr
+(11 rows)
+```
+
+```
+\dt sales.*
+```
+
+a bunch of tables
+
+```
+select * from "sales".customer limit 3;
+```
+
+```
+ customerid | personid | storeid | territoryid |               rowguid                |      modifieddate
+------------+----------+---------+-------------+--------------------------------------+-------------------------
+          1 |          |     934 |           1 | 3f5ae95e-b87d-4aed-95b4-c3797afcb74f | 2014-09-12 11:15:07.263
+          2 |          |    1028 |           1 | e552f657-a9af-4a7d-a645-c429d6e02491 | 2014-09-12 11:15:07.263
+          3 |          |     642 |           4 | 130774b1-db21-4ef3-98c8-c104bcd6ed6d | 2014-09-12 11:15:07.263
+(3 rows)
+```
 
 ## Python
 

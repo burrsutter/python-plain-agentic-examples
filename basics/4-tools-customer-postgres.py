@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel, Field
+import psycopg2
+from psycopg2 import sql
 
 import os
 import json
@@ -13,28 +15,74 @@ client = OpenAI(
     base_url=os.getenv("INFERENCE_SERVER_URL")
     )
 
+user_input = "What are customer BSBEV's details?"
+
 messages = [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "What are customer C100's details?"},
+    {"role": "system", "content": "You are a helpful assistant that must customer_search tool"},
+    {"role": "user", "content": user_input}
 ]
+
+
 
 class CustomerDetails(BaseModel):
     customer_id: str
-    first_name: str
-    last_name: str
-    balance: float
+    company_name: str
+    contact_name: str
+    country: str
+    phone: str
+    
 
-def fetch_customer_details(customer_id):
+def customer_search(customer_id):
     """ this is mock data """
-    print("fetch_customer_details invoked with " + customer_id)
-    return "Customer " + customer_id + " is Burr Sutter with a balance of $100"
+    print("customer_search " + customer_id)
+
+    try:
+        # Establish a connection to the PostgreSQL database
+        connection = psycopg2.connect(
+            dbname="northwind",
+            user="postgres",
+            password="admin",
+            host="localhost",
+            port="5432"
+        )
+
+        # Create a cursor object to interact with the database
+        cursor = connection.cursor()
+
+        # Execute a query to retrieve the desired customer        
+        query = sql.SQL("SELECT customer_id, company_name, contact_name, phone FROM {table} WHERE {id_field} = %s").format(
+            table=sql.Identifier('customer'),
+            id_field=sql.Identifier('customer_id')
+        )
+
+        cursor.execute(query)
+
+        # Fetch all customer records
+        customers = cursor.fetchone()
+
+        # Display the list of customers
+        print("found customer")
+        for customer in customers:
+            print(customer)
+
+    except Exception as error:
+            print(f"Error connecting to PostgreSQL database: {error}")
+
+    finally:
+        # Close the cursor and connection to clean up
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+    return "Customer " + customer_id + " is ACME Corporation"
 
 
 tools = [
     {
         "type" : "function",
         "function" : {
-            "name": "fetch_customer_details",
+            "name": "customer_search",
             "description": "Find and return the customer details for the provided customer id",
             "parameters": {
                 "type": "object",
@@ -110,24 +158,4 @@ print(final_response.customer_id)
 print(final_response.customer_name)
 print(final_response.balance)
 
-# and another call to the model, to see if it does NOT use the tool
-
-class LeopardSpeed(BaseModel):
-    speed: int
-
-completion_3 = client.beta.chat.completions.parse(
-    model=os.getenv("MODEL_NAME"),
-    messages=[
-        {"role": "system", "content": "You're a helpful assistant."},
-        {
-            "role": "user",
-            "content": "What is the top speed of a leopard in kilometers per hour?",
-        },
-    ],
-    response_format=LeopardSpeed,
-)
-
-result = completion_3.choices[0].message.parsed
-
-print("Leopard Speed: ", result.speed)
 

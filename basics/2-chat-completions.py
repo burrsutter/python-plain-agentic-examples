@@ -22,6 +22,7 @@ completion_1 = client.chat.completions.create(
             "content": "What length of the Pont des Arts in meters?",
         },
     ],
+    temperature=0.0, 
 )
 
 response = completion_1.choices[0].message.content
@@ -38,6 +39,7 @@ completion_2 = client.chat.completions.create(
             "content": "What is the top speed of a leopard in kilometers per hour?",
         },
     ],
+    temperature=0.0, 
 )
 
 response = completion_2.choices[0].message.content

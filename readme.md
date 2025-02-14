@@ -44,6 +44,8 @@ pip install --upgrade openai
 
 Copy `.env-example` to `.env` 
 
+or create env vars
+
 ```
 export API_KEY=blah
 export INFERENCE_SERVER_URL=https://api.openai.com/v1
@@ -123,6 +125,12 @@ or
 ollama pull granite3.1-dense:8b-instruct-fp16
 ```
 
+or
+
+```
+ollama pull llama3.2:3b-instruct-fp16
+```
+
 
 Check your downloaded models by listing them 
 
@@ -138,11 +146,65 @@ export INFERENCE_SERVER_URL=http://localhost:11434/v1
 export MODEL_NAME=qwen2.5-coder:14b-instruct-fp16
 ```
 
-## Test connectivity, list models
+or
+
+```
+export API_KEY=nothing
+export INFERENCE_SERVER_URL=http://localhost:11434/v1
+export MODEL_NAME=llama3.2:3b-instruct-fp16
+```
+
+You can also keep the models in memory with a -keepalive
+
+```
+ollama run llama3.2:3b-instruct-fp16 --keepalive 60m
+```
+
+To verify https://github.com/ollama/ollama/blob/main/docs/api.md#list-running-models
+
+```
+curl http://localhost:11434/api/ps
+```
+
+```
+{"models":[{"name":"llama3.2:3b-instruct-fp16","model":"llama3.2:3b-instruct-fp16","size":8581748736,"digest":"195a8c01d91ec3cb1e0aad4624a51f2602c51fa7d96110f8ab5a20c84081804d","details":{"parent_model":"","format":"gguf","family":"llama","families":["llama"],"parameter_size":"3.2B","quantization_level":"F16"},"expires_at":"2025-02-13T16:33:12.724036-05:00","size_vram":8581748736}]}%
+```
+
+
+
+## Test connectivity
 
 ```
 cd basics
 python 1-list-models.py
+```
+
+```
+curl $INFERENCE_SERVER_URL/models \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+```
+curl -sS $INFERENCE_SERVER_URL/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $API_KEY" \
+  -d "{
+     \"model\": \"$MODEL_NAME\",
+     \"messages\": [{\"role\": \"user\", \"content\": \"Who is Burr Sutter?\"}],
+     \"temperature\": 0.0
+   }" | jq -r '.choices[0].message.content'
+```
+
+```
+curl -sS $INFERENCE_SERVER_URL/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $API_KEY" \
+  -d "{
+     \"model\": \"$MODEL_NAME\",
+     \"messages\": [{\"role\": \"user\", \"content\": \"How many seconds would it take for a leopard at full speed to run through Pont des Arts?\"}],
+     \"temperature\": 0.0
+   }" | jq -r '.choices[0].message.content'
 ```
 
 ## Chat Completions
@@ -179,6 +241,8 @@ https://platform.openai.com/docs/guides/function-calling
 and
 
 https://ollama.com/blog/tool-support
+
+https://ollama.com/search?c=tools
 
 Where the model provides the "tool callback", you, the developer must provide the tool, describe the tool and invoke the tool.  The LLM simply suggests the when and with what parameters.
 

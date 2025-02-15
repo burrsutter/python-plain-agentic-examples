@@ -1,4 +1,7 @@
 import psycopg2
+from psycopg2 import sql
+
+contact_to_find = "%elizabeth%"
 
 try:
     # Establish a connection to the PostgreSQL database
@@ -58,6 +61,27 @@ try:
     print("List of customers:")
     for customer in customers:
         print(customer)
+
+    # find customers by contact name match
+    print("Find contacts", contact_to_find)
+
+    query = sql.SQL("""
+        SELECT customer_id, company_name, contact_name
+        FROM customers
+        WHERE contact_name ILIKE %s
+    """)
+
+    # Execute the query with the search pattern as a parameter
+    cursor.execute(query, (contact_to_find,))
+
+    # Fetch all matching records
+    customers = cursor.fetchall()
+
+    # Display the list of customers
+    print("Customers with 'elizabeth' in their contact name:")
+    for customer in customers:
+        print(f"ID: {customer[0]}, Company: {customer[1]}, Contact Name: {customer[2]}")
+    
 
 except Exception as error:
     print(f"Error connecting to PostgreSQL database: {error}")

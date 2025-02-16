@@ -252,6 +252,31 @@ Where the model provides the "tool callback", you, the developer must provide th
 python 4-tools-customer.py
 ```
 
+### with Postgres
+
+```
+python 4-tools-customer-postgres-by-id.py
+```
+
+```
+2025-02-15 16:08:15 - INFO - -------
+2025-02-15 16:08:15 - INFO - <class '__main__.CustomerDetails'>
+2025-02-15 16:08:15 - INFO - Customer ID: BERGS, Company Name: Berglunds snabbköp, Contact Name: Christina Berglund, Phone: 0921-12 34 65
+2025-02-15 16:08:15 - INFO - -------
+```
+
+```
+python 4-tools-customer-postgres-by-contact.py
+```
+
+```
+2025-02-15 16:08:53 - INFO - -------
+2025-02-15 16:08:53 - INFO - <class '__main__.CustomerList'>
+2025-02-15 16:08:53 - INFO - Customer ID: BOTTM, Company Name: Bottom-Dollar Markets, Contact Name: Elizabeth Lincoln, Country: Canada, Phone: (604) 555-4729
+2025-02-15 16:08:53 - INFO - Customer ID: CONSH, Company Name: Consolidated Holdings, Contact Name: Elizabeth Brown, Country: UK, Phone: (171) 555-2282
+2025-02-15 16:08:53 - INFO - -------
+```
+
 ### Make an external API a Tool
 
 
@@ -301,7 +326,10 @@ Try some prompts
 python guardian-playground-risk.py
 ```
 
-## Workflows
+## workflows
+
+combining the ideas from "basics" into chains & steps
+
 
 
 

@@ -7,6 +7,20 @@ import requests
 
 load_dotenv()
 
+import logging
+
+# setup logger
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
+# --------------------------------------------------------------
+# Step 1: Create client
+# --------------------------------------------------------------
+
 
 client = OpenAI(
     api_key=os.getenv("API_KEY"),
@@ -15,17 +29,12 @@ client = OpenAI(
 
 
 # --------------------------------------------------------------
-# Define the tool (function) that we want to call
+# Step 2: Define the tool (function) that we want to call
 # --------------------------------------------------------------
-
 
 def get_weather(latitude, longitude):
     """This is a publically available API that returns the weather for a given location."""
-
-    print("*1" * 40)
-    print("Tool Invoked")
-    print("*1" * 40)
-
+    logger.info("get_weather Tool invoked")    
     response = requests.get(
         f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
     )
@@ -34,7 +43,7 @@ def get_weather(latitude, longitude):
 
 
 # --------------------------------------------------------------
-# Step 1: Call model with get_weather tool defined
+# Step 3: Describe the get_weather tool 
 # --------------------------------------------------------------
 
 tools = [
@@ -57,6 +66,11 @@ tools = [
     }
 ]
 
+# --------------------------------------------------------------
+# Step 4: Call the model with the tool
+# --------------------------------------------------------------
+
+
 system_prompt = "You are a helpful weather assistant."
 
 messages = [
@@ -68,24 +82,20 @@ completion_1 = client.chat.completions.create(
     model=os.getenv("MODEL_NAME"),
     messages=messages,
     tools=tools,
+    tool_choice="auto",
 )
 
 # --------------------------------------------------------------
-# Step 2: Debugging output
+# Step 5: Debugging output
 # --------------------------------------------------------------
 
-# print("*2" * 40)
-# print(completion_1.model_dump())
-# print("*2" * 40)
 
-print("*3" * 40)
-print("Tools to be invoked:")
-print(completion_1.choices[0].message.tool_calls)
-print("*3" * 40)
+logger.info("Tools to be invoked?")
+logger.info(completion_1.choices[0].message.tool_calls)
 
 
 # --------------------------------------------------------------
-# Step 3: Execute get_weather function
+# Step 6: Execute get_weather function callback
 # --------------------------------------------------------------
 
 
@@ -106,7 +116,7 @@ if completion_1.choices[0].message.tool_calls:
         )
 
 # --------------------------------------------------------------
-# Step 4: Describe result and call model again
+# Step 7: Describe result and call model again
 # --------------------------------------------------------------
 
 class WeatherResponse(BaseModel):
@@ -126,14 +136,14 @@ completion_2 = client.beta.chat.completions.parse(
 )
 
 # --------------------------------------------------------------
-# Step 5: Check model response
+# Step 7: Check model response
 # --------------------------------------------------------------
 
 final_response = completion_2.choices[0].message.parsed
 # print(final_response)
 
-print("Temperature:*", final_response.temperature, "*")
-# final_response.response
+logger.info("Temperature: %s", final_response.temperature)
+
 
 
 

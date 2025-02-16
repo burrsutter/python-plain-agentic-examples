@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from openai import OpenAI
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 import os
 
@@ -25,9 +25,9 @@ completion = client.beta.chat.completions.parse(
         {"role": "system", "content": "Extract the support email information."},
         {
             "role": "user",
-            # "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email. Sincerely, David Jones david@emailstuff.org",
-            "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email and I need it immediately for tax purposes. Sincerely, David Jones david@emailstuff.org",
-            # "content": "I purchased a TechGear Pro Laptop from you and the damn thing won't boot up, my project deadline is near. David david@emailstuff.org",
+            "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email. Sincerely, David Jones david@example.org",
+            # "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email and I need it immediately for tax purposes. Sincerely, David Jones david@example.org",
+            # "content": "I purchased a TechGear Pro Laptop from you and the damn thing won't boot up, my project deadline is near. David david@example.org",
         },
     ],
     response_format=AnalyzedEmail,

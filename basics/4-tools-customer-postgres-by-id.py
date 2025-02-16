@@ -38,7 +38,7 @@ user_input = "Find customer " + customer_id_to_find + " details"
 
 # this list serves as a memory bank, allowing for multiple LLM calls
 messages = [
-    {"role": "system", "content": "You are a helpful assistant that must customer_search or contact_search tool"},
+    {"role": "system", "content": "You are a helpful assistant that must use customer_search"},
     {"role": "user", "content": user_input}
 ]
 

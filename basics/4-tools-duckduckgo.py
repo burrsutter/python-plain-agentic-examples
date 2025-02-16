@@ -4,7 +4,6 @@ from pydantic import BaseModel, Field
 from duckduckgo_search import DDGS
 import os
 import json
-import requests
 import logging
 
 logging.basicConfig(
@@ -19,7 +18,6 @@ load_dotenv()
 
 # --------------------------------------------------------------
 # I asked ChatGPT to give me a DuckDuckGo Tool calling example
-# and combined it with Dave E's example
 # --------------------------------------------------------------
 
 client = OpenAI(

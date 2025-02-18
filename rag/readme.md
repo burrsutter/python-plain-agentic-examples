@@ -1,7 +1,7 @@
 
-# RAG Examples
+# RAG Examples with pgvector
 
-See postgres.md for postgres and pgvector installation
+See postgres.md for Postgres and **pgvector** installation
 
 ## Basic RAG
 
@@ -86,7 +86,9 @@ What did Burr Sutter do? I don't know.
 Database connection closed.
 ```
 
-## Directory Ingestion
+## Directory Ingestion with LangChain
+
+LangChain recommeneded by ChatGPT
 
 Clean out previous ingestions
 

@@ -36,7 +36,10 @@ def get_weather(latitude, longitude):
     """This is a publically available API that returns the weather for a given location."""
     logger.info("get_weather Tool invoked")    
     response = requests.get(
+        # celsius, metric 
         f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
+        # fahrenheit, imperial
+        # f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph"
     )
     data = response.json()
     return data["current"]
@@ -108,6 +111,8 @@ if completion_1.choices[0].message.tool_calls:
     for tool_call in completion_1.choices[0].message.tool_calls:
         name = tool_call.function.name
         args = json.loads(tool_call.function.arguments)
+        
+        logger.info("What? %s", completion_1.choices[0].message)
         messages.append(completion_1.choices[0].message)
 
         result = call_function(name, args)

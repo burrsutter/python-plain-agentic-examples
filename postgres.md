@@ -575,4 +575,134 @@ brew services stop postgresql@14
 brew services list
 ```
 
+## Adding pgvector
+
+```
+brew install pgvector
+```
+
+Restart the overall service (unclear if this is required or just good form)
+
+```
+brew services restart postgresql
+```
+
+
+```
+psql postgres
+```
+
+```
+\l
+```
+
+### Create a database and table
+
+```
+CREATE DATABASE myvectordb;
+```
+
+```
+\l
+```
+
+```
+\c myvectordb
+```
+
+```
+CREATE EXTENSION vector;
+```
+
+See if the vector extension is working
+
+```
+CREATE TABLE items (
+    id SERIAL PRIMARY KEY,
+    embedding vector(3)
+);
+```
+
+### CRUD
+
+```
+INSERT INTO items (embedding) VALUES ('[0.1, 0.2, 0.3]');
+```
+
+```
+SELECT * FROM items;
+```
+
+```
+ id |   embedding
+----+---------------
+  1 | [0.1,0.2,0.3]
+(1 row)
+```
+
+```
+SELECT *
+FROM items
+ORDER BY embedding <-> '[0.2, 0.1, 0.3]'
+LIMIT 5;
+```
+
+```
+ id |   embedding
+----+---------------
+  1 | [0.1,0.2,0.3]
+(1 row)
+```
+
+```
+UPDATE items
+SET embedding = '[0.4, 0.5, 0.6]'
+WHERE id = 1;
+```
+
+```
+SELECT * FROM items;
+```
+
+```
+ id |   embedding
+----+---------------
+  1 | [0.4,0.5,0.6]
+(1 row)
+```
+
+```
+DELETE FROM items
+WHERE id = 1;
+```
+
+```
+ id | embedding
+----+-----------
+(0 rows)
+```
+
+### Indexing
+
+```
+CREATE INDEX ON items USING hnsw (embedding);
+```
+
+#### cosign similiarity <=>
+
+```
+SELECT *
+FROM items
+ORDER BY embedding <=> '[0.2, 0.1, 0.3]'
+LIMIT 5;
+```
+
+#### inner product <#>
+
+```
+SELECT *
+FROM items
+ORDER BY embedding <#> '[0.2, 0.1, 0.3]'
+LIMIT 5;
+```
 

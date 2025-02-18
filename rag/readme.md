@@ -1,6 +1,9 @@
-See postgres.md for pgvector installation
 
-## Basic
+# RAG Examples
+
+See postgres.md for postgres and pgvector installation
+
+## Basic RAG
 
 ```
 psql postgres
@@ -83,7 +86,7 @@ What did Burr Sutter do? I don't know.
 Database connection closed.
 ```
 
-## Using files from local directory
+## Directory Ingestion
 
 Clean out previous ingestions
 
@@ -143,5 +146,42 @@ python 2-retrieve-directory-ada.py
 ### mpnet
 
 ```
-python 1-ingest-directory-ada.py
+python 1-ingest-directory-mpnet.py
 ```
+
+```
+python 2-retrieve-directory-mpnet.py
+```
+
+
+## ToDos
+
+query = "what is the mad hatter's riddle" with smaller/larger chunk_size+chunk_overlap
+with text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+and the relationship to select count(*) documentsone;
+
+make it work with vLLM and ollama
+
+
+This is a long text. It contains multiple sentences. Some sentences are about apples. Other sentences are about bananas.  We want to process this text in chunks.
+
+if chunk_size = 20 and chunk_overlap = 5:
+
+Chunk 1: "This is a long text."
+Chunk 2: "long text. It contains"
+Chunk 3: "It contains multiple"
+Chunk 4: "multiple sentences. Some"
+Chunk 5: "sentences. Some sentences"
+Chunk 6: "sentences are about apples."
+Chunk 7: "about apples. Other"
+Chunk 8: "Other sentences are about"
+Chunk 9: "are about bananas. We"
+Chunk 10: "bananas. We want to"
+Chunk 11: "want to process this text"
+Chunk 12: "process this text in chunks."
+
+The optimal values for chunk_size and chunk_overlap depend on:
+
+LLM context window: chunk_size should be smaller than the LLM's context window.
+Nature of the text: Highly structured text (e.g., code, tables) might need smaller chunk_size and lower chunk_overlap. More narrative text might benefit from larger chunk_size and higher chunk_overlap.
+Performance requirements: Larger chunk_overlap increases processing but improves context. Balance this with your performance needs.

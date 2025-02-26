@@ -98,6 +98,10 @@ https://ollama.com/search?c=tools
 Start the `ollama` server on localhost
 
 ```
+brew install ollama
+```
+
+```
 ollama serve
 ```
 
@@ -152,6 +156,14 @@ or
 export API_KEY=nothing
 export INFERENCE_SERVER_URL=http://localhost:11434/v1
 export MODEL_NAME=llama3.2:3b-instruct-fp16
+```
+
+or if ollama is on another machine
+
+```
+export API_KEY=nothing
+export INFERENCE_SERVER_URL=http://192.168.1.76:11434/v1
+export MODEL_NAME=qwen2.5-coder:14b-instruct-fp16
 ```
 
 You can also keep the models in memory with a -keepalive

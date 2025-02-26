@@ -9,14 +9,22 @@ See postgres.md for Postgres and **pgvector** installation
 psql postgres
 ```
 
+what databases do I have?
+
+```
+\l
+```
+
 ```
 CREATE DATABASE rag_db;
 \c rag_db
 ```
 
 ```
-quit
+CREATE EXTENSION vector;
 ```
+
+another terminal
 
 ```
 pip install openai
@@ -32,7 +40,7 @@ cd rag
 ```
 
 ```
-python 1-ingest.py
+python 1-ingest-simple.py
 ```
 
 ```
@@ -155,6 +163,22 @@ python 1-ingest-directory-mpnet.py
 python 2-retrieve-directory-mpnet.py
 ```
 
+
+## Milvus 
+
+https://milvus.io/docs/install-overview.md
+
+
+Using milvus lite
+
+
+```
+pip install pymilvus
+```
+
+```
+
+```
 
 ## ToDos
 

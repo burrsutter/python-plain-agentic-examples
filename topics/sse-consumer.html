@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE Example</title>
+</head>
+<body>
+    <h1>Server-Sent Events Demo</h1>
+    <div id="events"></div>
+
+    <script>
+        // Check if the browser supports EventSource
+        if (typeof(EventSource) !== "undefined") {
+            // Create a new EventSource instance, pointing to your SSE endpoint
+            const eventSource = new EventSource("http://localhost:8000/sse");
+
+            // Define the onmessage handler to process incoming messages
+            eventSource.onmessage = function(event) {
+                // Create a new paragraph element to display the message
+                const newEvent = document.createElement("p");
+                newEvent.textContent = "Received: " + event.data;
+                document.getElementById("events").appendChild(newEvent);
+            };
+
+            // Define the onerror handler to handle any errors
+            eventSource.onerror = function(error) {
+                console.error("EventSource failed:", error);
+                eventSource.close(); // Close the connection on error
+            };
+        } else {
+            console.log("Your browser does not support Server-Sent Events.");
+        }
+    </script>
+</body>
+</html>

@@ -2,3 +2,6 @@
 .DS_Store
 venv/
 imdb/
+milvus_demo.db
+node_modules/
+__pycache__

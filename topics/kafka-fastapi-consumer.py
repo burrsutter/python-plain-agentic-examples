@@ -5,7 +5,7 @@ import asyncio
 import json
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+app = FastAPI(title="FastAPI Kafka consumer SSE broadcaster")
 
 KAFKA_TOPIC = "test_topic"
 KAFKA_BOOTSTRAP_SERVERS = "localhost:9092"
@@ -35,8 +35,8 @@ async def consume_kafka():
     consumer = AIOKafkaConsumer(
         KAFKA_TOPIC,
         bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
-        auto_offset_reset="earliest",
-        #enable_auto_commit=True,
+        auto_offset_reset="latest",
+        enable_auto_commit=False,
         #group_id="sse-consumer-group"
     )
     await consumer.start()
@@ -51,3 +51,4 @@ async def consume_kafka():
 @app.get("/sse")
 async def sse_stream():
     return EventSourceResponse(consume_kafka())
+

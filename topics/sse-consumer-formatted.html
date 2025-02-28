@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .control-panel {
+            flex: 1;
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        .message-panel {
+            flex: 2;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.disconnect {
+            background-color: #f44336;
+        }
+        button.disconnect:hover {
+            background-color: #d32f2f;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .message {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .message pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .status {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .connected {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .disconnected {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .connecting {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+        }
+    </style>
+</head>
+<body>
+    <h3>Kafka Client</h3>
+    
+    <div class="container">
+        <div class="control-panel">
+            <div class="form-group">
+                <label for="serverUrl">Server URL:</label>
+                <input type="text" id="serverUrl" value="http://localhost:8000" />
+            </div>
+            
+            <div class="form-group">
+                <button id="connect">Connect</button>
+                <button id="disconnect" class="disconnect" disabled>Disconnect</button>
+            </div>
+            
+            <div id="status" class="status disconnected">
+                Disconnected
+            </div>
+        </div>
+        
+        <div class="message-panel">            
+            <button id="clearMessages">Clear</button>
+            <div id="messages"></div>
+        </div>
+    </div>
+    
+    <script>
+let eventSource = null;
+
+// Hide the control panel
+document.querySelector(".control-panel").style.display = "none";
+
+// Predefined server URL
+const serverUrl = "http://localhost:8000/sse"; // Update if needed
+
+// DOM elements
+const statusElement = document.getElementById('status');
+const messagesContainer = document.getElementById('messages');
+const clearMessagesButton = document.getElementById('clearMessages');
+
+// Function to connect to SSE
+function connectToSSE() {
+    if (eventSource) {
+        eventSource.close();
+    }
+
+    // Update UI
+    statusElement.className = 'status connecting';
+    statusElement.textContent = 'Connecting...';
+
+    // Create EventSource
+    eventSource = new EventSource(serverUrl);
+
+    // Event handlers
+    eventSource.onopen = () => {
+        statusElement.className = 'status connected';
+        statusElement.textContent = 'Connected';
+    };
+
+    eventSource.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message';
+
+            const timestamp = new Date().toLocaleTimeString();
+            messageElement.innerHTML = `
+                <div><strong>Time:</strong> ${timestamp}</div>
+                <div><strong>ID:</strong> ${event.lastEventId}</div>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+
+            messagesContainer.prepend(messageElement);
+        } catch (error) {
+            console.error('Error parsing message:', error);
+        }
+    };
+
+    eventSource.onerror = (error) => {
+        console.error('EventSource error:', error);
+        statusElement.className = 'status disconnected';
+        statusElement.textContent = 'Error: Connection failed';
+        eventSource.close();
+        eventSource = null;
+
+        // Optionally, retry connection after a delay
+        setTimeout(connectToSSE, 5000);
+    };
+}
+
+// Automatically connect when the page loads
+window.addEventListener("load", connectToSSE);
+
+// Clear messages
+clearMessagesButton.addEventListener('click', () => {
+    messagesContainer.innerHTML = '';
+});
+</script>
+</body>
+</html>

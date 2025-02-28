@@ -38,8 +38,10 @@ if __name__ == "__main__":
     prefix_filter = "my_"  # Change to filter by prefix
     contains_filter = "email"  # Change to filter by keyword
 
+    queues_all = get_filtered_queues()
     queues_by_prefix = get_filtered_queues(prefix=prefix_filter)
     queues_by_keyword = get_filtered_queues(contains=contains_filter)
 
+    print(f"All Queues : {queues_all}")
     print(f"Queues starting with '{prefix_filter}': {queues_by_prefix}")
     print(f"Queues containing '{contains_filter}': {queues_by_keyword}")

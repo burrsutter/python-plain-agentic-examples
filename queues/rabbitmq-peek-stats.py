@@ -1,12 +1,15 @@
 import pika
 
-queue_name = "my_queue"
+queue_name = "test_queue"
+# queue_name = "my_queue"
+
+credentials = pika.PlainCredentials('guest', 'guest')
 
 def peek_queue(queue_name=queue_name, host='localhost'):
     """Peek at all messages in a RabbitMQ queue and display queue stats without consuming them."""
     
     # Establish connection
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host, credentials=credentials))
     channel = connection.channel()
 
     # Get queue stats

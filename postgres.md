@@ -223,7 +223,7 @@ CREATE DATABASE northwind;
 
 
 ```
-select customer_id, company_name from customers limit 5;
+select customer_id, company_name, contact_name  from customers limit 5;
 ```
 
 ```
@@ -235,6 +235,32 @@ select customer_id, company_name from customers limit 5;
  AROUT       | Around the Horn
  BERGS       | Berglunds snabbköp
 (5 rows)
+```
+
+Add a contact email column to the customers table
+
+```
+ALTER TABLE Customers
+ADD contact_email VARCHAR(255);
+```
+
+```
+UPDATE Customers
+SET contact_email = LOWER(REPLACE(contact_name, ' ', '')) || '@example.com';
+```
+
+```
+select customer_id, company_name, contact_name, contact_email from customers;
+```
+
+```
+SELECT customer_id, company_name, contact_name, contact_email
+FROM customers
+WHERE contact_name ILIKE '%Liu%';
+```
+
+```
+select order_id, customer_id, employee_id, order_date from orders where customer_id='THECR';
 ```
 
 ### Pagila

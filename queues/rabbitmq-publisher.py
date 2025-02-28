@@ -8,10 +8,11 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 
 channel = connection.channel()
 
-queue_name = "my_queue"
+# queue_name = "my_queue"
+queue_name = "test_queue"
 
 # Declare the queue (auto-creates if needed)
-channel.queue_declare(queue=queue_name)
+channel.queue_declare(queue=queue_name, durable=True)
 
 channel.basic_publish(exchange='',
                       routing_key=queue_name,

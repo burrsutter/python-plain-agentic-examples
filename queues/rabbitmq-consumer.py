@@ -8,10 +8,10 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 
 channel = connection.channel()
 
-queue_name = "my_queue"
+queue_name = "test_queue"
 
 # Declare the queue (auto-creates if needed)
-channel.queue_declare(queue=queue_name)
+channel.queue_declare(queue=queue_name, durable=True)
 
 # Define callback function
 def callback(ch, method, properties, body):

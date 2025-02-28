@@ -28,6 +28,10 @@ curl -u guest:guest http://localhost:15672/api/healthchecks/node
 ```
 
 ```
+{"status":"ok"}%
+```
+
+```
 # for macOS Intel
 export PATH=$PATH:/usr/local/sbin
 # for Apple Silicon
@@ -81,6 +85,18 @@ python rabbitmq-publisher.py
 
 ```
 python rabbitmq-peek-stats.py
+```
+
+Consume to clear the queue
+```
+python rabbitmq-consumer.py
+```
+
+
+### Publish bunch of messages
+
+```
+python rabbitmq-publisher-many.py --queue test_queue --count 20 --interval 0.5 --json
 ```
 
 ### Priority

@@ -1,5 +1,5 @@
 from kafka import KafkaProducer
-from message import Message # Pydantic class defined in message.py
+from models import Message # Pydantic class defined in message.py
 import os
 import uuid
 from datetime import datetime
@@ -20,13 +20,12 @@ kafka_message = Message(
     content="Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email. Sincerely, David Jones david@example.org"
 )
 
-
 # Send the JSON object as one message
 value = kafka_message.model_dump_json().encode('utf-8')
 
-print(f"To Be Sent: {value}")
-
 producer.send(TOPIC_NAME, value)
+
+print(f"Sent: {value}")
 
 # Ensure all messages are sent before exiting
 producer.flush()

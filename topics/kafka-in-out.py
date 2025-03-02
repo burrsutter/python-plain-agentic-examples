@@ -5,7 +5,7 @@
 from kafka import KafkaConsumer, KafkaProducer
 from dotenv import load_dotenv
 from openai import OpenAI
-from message import Message
+from topics.models import Message
 import json
 import os
 import logging

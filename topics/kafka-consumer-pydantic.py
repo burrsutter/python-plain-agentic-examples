@@ -1,5 +1,5 @@
 from kafka import KafkaConsumer
-from message import Message
+from models import Message
 import os
 from dotenv import load_dotenv
 

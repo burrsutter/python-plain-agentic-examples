@@ -5,10 +5,13 @@
 from kafka import KafkaConsumer, KafkaProducer
 from dotenv import load_dotenv
 from openai import OpenAI
-from message import Message
+from models import Message
+from models import AnalyzedEmail
 import json
 import os
 import logging
+from openai import OpenAI
+
 
 # Load env vars
 load_dotenv()
@@ -19,6 +22,12 @@ KAFKA_REVIEW_TOPIC=os.getenv("KAFKA_REVIEW_TOPIC")
 MODEL_NAME=os.getenv("MODEL_NAME")
 API_KEY=os.getenv("API_KEY")
 INFERENCE_SERVER_URL=os.getenv("INFERENCE_SERVER_URL")
+
+client = OpenAI(
+    api_key=os.getenv("API_KEY"),
+    base_url=os.getenv("INFERENCE_SERVER_URL")
+    )
+
 
 # Set up logging configuration
 logging.basicConfig(
@@ -52,22 +61,42 @@ class MessageProcessor():
     # Takes the input, modifies, returns it back    
     def process(self, message:Message) -> Message:
         try:
-            logger.info("Processing: " + message.content)
-
-
-            # -------------------------------------------------------
-            # LLM Magic Happens
-            # -------------------------------------------------------
-
+            logger.info("LLM Processing: " + message.content)
 
             # -------------------------------------------------------
             # LLM Magic Happens
             # -------------------------------------------------------
 
+            completion = client.beta.chat.completions.parse(
+                model=os.getenv("MODEL_NAME"),
+                messages=[
+                    {"role": "system", "content": "Extract the customer support email information."},
+                    {"role": "user", "content": message.content},
+                ],
+                response_format=AnalyzedEmail,
+            )
+            logger.info("chat completions")
+            emailanalysis = completion.choices[0].message.parsed
+
+            logger.info("-------")
+            # logger.info(emailanalysis)            
+            logger.info(f"Reason:   {emailanalysis.reason}")
+            logger.info(f"Customer: {emailanalysis.customer_name}")
+            logger.info(f"Email:    {emailanalysis.email_address}")
+            logger.info(f"Product:  {emailanalysis.product_name}")
+            logger.info(f"Sentiment:{emailanalysis.sentiment}")
+            logger.info(f"Escalate: {emailanalysis.escalate}")
+            logger.info("-------")
+
+            message.comment=emailanalysis
+            # -------------------------------------------------------
+            # LLM Magic Happens
+            # -------------------------------------------------------
 
             return message
         except Exception as e:
             # Need to say something about what when wrong
+            logger.error(f"BAD Thing: {e}")
             return message
     
     def to_review(self, message: Message):
@@ -85,7 +114,7 @@ class MessageProcessor():
         try:
             logger.info("Starting message processor...")
             for kafka_message in self.consumer:
-                logger.info(f"Processing Kafka message: {type(kafka_message)}")                
+                logger.info(f"Before Processing message: {type(kafka_message)}")                
                 # Extract the JSON payload from the Kafka message
                 message_data = kafka_message.value  # `value` contains the deserialized JSON payload
 
@@ -94,7 +123,7 @@ class MessageProcessor():
 
                 # Process the message
                 processed_message = self.process(message)
-                logger.info(f"Processed message: {processed_message}")
+                logger.info(f"After Processing message: {processed_message}")
 
                 # Send the message to output
                 self.producer.send(KAFKA_OUTPUT_TOPIC,processed_message)

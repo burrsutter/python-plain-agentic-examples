@@ -51,8 +51,24 @@ class MessageProcessor():
 
     # Takes the input, modifies, returns it back    
     def process(self, message:Message) -> Message:
+        try:
+            logger.info("Processing: " + message.content)
 
-        return message
+
+            # -------------------------------------------------------
+            # LLM Magic Happens
+            # -------------------------------------------------------
+
+
+            # -------------------------------------------------------
+            # LLM Magic Happens
+            # -------------------------------------------------------
+
+
+            return message
+        except Exception as e:
+            # Need to say something about what when wrong
+            return message
     
     def to_review(self, message: Message):
         try:
@@ -63,13 +79,26 @@ class MessageProcessor():
             logger.error(f"Error sending message to topic {KAFKA_REVIEW_TOPIC}: {str(e)}")
         
     # -------------------------------------------------------
-    # This is where the action is
+    # Action Happens
     # -------------------------------------------------------
     def run(self):       
         try:
             logger.info("Starting message processor...")
             for kafka_message in self.consumer:
-                logger.info("Processing Kafka message")
+                logger.info(f"Processing Kafka message: {type(kafka_message)}")                
+                # Extract the JSON payload from the Kafka message
+                message_data = kafka_message.value  # `value` contains the deserialized JSON payload
+
+                # Convert JSON data into a Pydantic Message object
+                message = Message(**message_data)
+
+                # Process the message
+                processed_message = self.process(message)
+                logger.info(f"Processed message: {processed_message}")
+
+                # Send the message to output
+                self.producer.send(KAFKA_OUTPUT_TOPIC,processed_message)
+
 
         except Exception as e:
             logger.error(f"Error processing message: {str(e)}")

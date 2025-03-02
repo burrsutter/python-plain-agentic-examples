@@ -175,10 +175,16 @@ python kafka-producer-consumer.py
 ### in-processor-out
 An example of input topic, processing, output topic
 
+set up the topics involved
+
+```
+
+```
+
 Add a message
 
 ```
-python kafka-producer-input.py
+python kafka-producer-pydantic.py
 ```
 
 Process the message
@@ -191,14 +197,14 @@ Terminal 2
 see if it arrives in output
 
 ```
-python kafka-consumer-output.py
+python kafka-consumer-pydantic.py
 ```
 
 Terminal 3
 or see if it arrives in review
 
 ```
-python kafka-consumer-review.py
+kcat -C -b localhost:9092 -t review
 ```
 
 

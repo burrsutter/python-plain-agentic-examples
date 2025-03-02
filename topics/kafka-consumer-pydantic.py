@@ -1,9 +1,13 @@
 from kafka import KafkaConsumer
 from message import Message
+import os
+from dotenv import load_dotenv
 
-# Kafka configuration
-KAFKA_BROKER = "localhost:9092"  # Change if your broker is on another host
-TOPIC_NAME = "test_topic"  # Replace with your topic name
+load_dotenv()
+KAFKA_BROKER=os.getenv("KAFKA_BROKER")
+TOPIC_NAME=os.getenv("KAFKA_OUTPUT_TOPIC") # use this when wrapping the kafka-in-out.py
+# OR
+# TOPIC_NAME = "test_topic"  
 
 # Create Kafka consumer
 consumer = KafkaConsumer(

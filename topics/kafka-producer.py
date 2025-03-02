@@ -4,7 +4,8 @@ from kafka import KafkaProducer
 KAFKA_BROKER = "localhost:9092"
 
 # Kafka topic to send messages to
-TOPIC_NAME = "test_topic"
+# TOPIC_NAME = "test_topic"
+TOPIC_NAME = "in-gpt4o"
 
 # Create a Kafka producer
 producer = KafkaProducer(bootstrap_servers=KAFKA_BROKER)

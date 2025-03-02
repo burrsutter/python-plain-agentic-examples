@@ -56,7 +56,11 @@ Get a list of topics
 Create a topic
 
 ```
-/opt/homebrew/bin/kafka-topics --bootstrap-server localhost:9092 --create --topic test_topic --partitions 1 --replication-factor 1
+/opt/homebrew/bin/kafka-topics --bootstrap-server localhost:9092 --create --partitions 1 --replication-factor 1 --topic test_topic 
+```
+
+```
+/opt/homebrew/bin/kafka-topics --bootstrap-server localhost:9092 --create --partitions 1 --replication-factor 1 --topic review-gpt4o
 ```
 
 ```
@@ -155,6 +159,46 @@ kcat -b localhost:9092 -t test_topic -P
 
 ```
 python kafka-producer.py
+```
+
+### Pydantic models/classes as Kafka messages
+
+```
+python kafka-producer-pydantic.py
+```
+
+```
+python kafka-producer-consumer.py
+```
+
+
+### in-processor-out
+An example of input topic, processing, output topic
+
+Add a message
+
+```
+python kafka-producer-input.py
+```
+
+Process the message
+
+```
+python kafka-in-out.py
+```
+
+Terminal 2
+see if it arrives in output
+
+```
+python kafka-consumer-output.py
+```
+
+Terminal 3
+or see if it arrives in review
+
+```
+python kafka-consumer-review.py
 ```
 
 

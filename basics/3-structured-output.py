@@ -27,14 +27,16 @@ completion = client.beta.chat.completions.parse(
         {
             "role": "user",
             "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email. Sincerely, David Jones david@example.org",
-            # "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email and I need it immediately for tax purposes. Sincerely, David Jones david@example.org",
-            # "content": "I purchased a TechGear Pro Laptop from you and the damn thing won't boot up, my project deadline is near. David david@example.org",
         },
     ],
     response_format=AnalyzedEmail,
 )
 
 emailanalysis = completion.choices[0].message.parsed
+
+            # "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email and I need it immediately for tax purposes. Sincerely, David Jones david@example.org",
+            # "content": "I purchased a TechGear Pro Laptop from you and the damn thing won't boot up, my project deadline is near. David david@example.org",
+
 
 print("-------")
 print(emailanalysis)

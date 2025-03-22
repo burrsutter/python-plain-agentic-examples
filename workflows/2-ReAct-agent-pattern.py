@@ -35,6 +35,9 @@ API_KEY=os.getenv("API_KEY")
 INFERNENCE_SERVER_URL=os.getenv("INFERENCE_SERVER_URL")
 MODEL_NAME=os.getenv("MODEL_NAME")
 
+logger.info(f"MODEL_NAME: {MODEL_NAME}")
+logger.info(f"INFERNENCE_SERVER_URL: {INFERNENCE_SERVER_URL}")
+
 BRAVE_API_KEY=os.getenv("BRAVE_API_KEY")
 WEB_SEARCH_NUM_RESULTS=5
 
@@ -335,7 +338,7 @@ def web_search(query: str) -> str:
     except Exception as e:
         return f"I encountered an error in the web_search tool: {str(e)}"
 
-# Wondering if I need a way to "deep dive" into a page
+# ToDo: Wondering if I need a way to "deep dive" into a page
 def web_page_scraper(query: str) -> str:
     logger.info("**************************************")
     logger.info(f"web_page_scrapper: {query}")
@@ -358,24 +361,36 @@ tools = {
 if __name__ == "__main__":
     agent = ReActAgent(tools)
 
-    # query = "What's the temperature in Raleigh, NC and what's 25 * 4?"
-    # answer = agent.think(query, max_steps=3)
+    # OK: gpt4o
+    # OK: qwen2.5-coder:14b-instruct-fp16
+    query = "What's the temperature in Raleigh, NC and what's 25 * 4?"
+    answer = agent.think(query, max_steps=3)
 
+    # OK: gpt4o
+    # OK: qwen2.5-coder:14b-instruct-fp16
     # query = "What's the weather in New York and what's 25 * 4?"
     # answer = agent.think(query, max_steps=5)
 
+    # OK: gpt4o
+    # OK: qwen2.5-coder:14b-instruct-fp16
     # should use the weather and wikipedia tool
     # query = "What's the temperature in Raleigh, NC and what is Archaeoacoustics?"
     # answer = agent.think(query, max_steps=3)
 
+    # OK: gpt4o
+    # NO: qwen2.5-coder:14b-instruct-fp16
     # query = "What is the top speed of a leopard in kilometers per hour?"
     # answer = agent.think(query, max_steps=3)
 
+    # OK: gpt4o
+    # NO: qwen2.5-coder:14b-instruct-fp16
     # query = "What length of the Pont des Arts in meters?"
     # answer = agent.think(query, max_steps=3)
 
-    query = "How many seconds would it take for a leopard at full speed to run through Pont des Arts?"
-    answer = agent.think(query, max_steps=5)
+    # OK: gpt4o
+    # NO: qwen2.5-coder:14b-instruct-fp16
+    # query = "How many seconds would it take for a leopard at full speed to run through Pont des Arts?"
+    # answer = agent.think(query, max_steps=5)
 
     # Best when out of steps, Final when the LLM thinks it is done
     logger.info(f"{query}\nUltimate Answer: {answer}")

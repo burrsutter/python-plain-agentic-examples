@@ -97,8 +97,8 @@ def extract_table_columns(json_file_path: str, target_column_names: list[str]):
 if __name__ == "__main__":
     # Construct the path relative to the script's location
     script_dir = os.path.dirname(os.path.abspath(__file__)) # Use abspath for reliability
-    input_json_path = os.path.join(script_dir, "output.json")
-    output_json_path = os.path.join(script_dir, "extracted_data.json")
+    input_json_path = os.path.join(script_dir, "../output.json")
+    output_json_path = os.path.join(script_dir, "../extracted_data.json")
     columns_to_extract = ["Description", "Gross worth"]
 
     extracted_rows = extract_table_columns(input_json_path, columns_to_extract)

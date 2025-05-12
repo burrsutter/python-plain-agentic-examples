@@ -2,7 +2,7 @@ import json
 import os
 
 # JSON_FILE = "output.json"  # The JSON file to read from
-JSON_FILE = "invoice_2.json"  # The JSON file to read from
+JSON_FILE = "../invoice_2.json"  # The JSON file to read from
 
 def find_gross_worth_data(json_file_path: str, target_column_name: str = "Gross worth"):
     """

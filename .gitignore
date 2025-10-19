@@ -1,6 +1,7 @@
 .env
 .DS_Store
 venv/
+.venv/
 imdb/
 milvus_demo.db
 node_modules/
